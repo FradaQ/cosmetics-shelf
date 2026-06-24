@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		028C09D2C69D406BBD166787772AC12F /* CosmeticsShelfApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F3E6C3D23E4F57B32B3B7A1B49274C /* CosmeticsShelfApp.swift */; };
+		1AC08C61A2AE4E16A8E4E2E8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 70A7594B9A7D42EF97F04557 /* Assets.xcassets */; };
 		A08F897DF0F940108ACF30C868CACCBF /* ProductItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E57CEA941F24A8A8E79691C98231831 /* ProductItemTests.swift */; };
 		7E02B767B15149E3A427908F4CF66195 /* ProductLookupServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33ED47B0CF5437782856C9C8B378013 /* ProductLookupServiceTests.swift */; };
 		4F1B7503E94846D793444FBB5164AB40 /* InventoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57FAAE8DEB444D28EAC904570F971E0 /* InventoryView.swift */; };
@@ -45,6 +46,7 @@
 		F33ED47B0CF5437782856C9C8B378013 /* ProductLookupServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductLookupServiceTests.swift; sourceTree = "<group>"; };
 		363DFCA9EA404DED8D887824F88EB8E1 /* ReminderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderView.swift; sourceTree = "<group>"; };
 		5F9ED8A7ADC94B409AC0886FBD3EDE90 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
+		70A7594B9A7D42EF97F04557 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		98F3E6C3D23E4F57B32B3B7A1B49274C /* CosmeticsShelfApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CosmeticsShelfApp.swift; sourceTree = "<group>"; };
 		63CA26683141465CB75C1B8AFE98C81B /* CosmeticsShelfTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CosmeticsShelfTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89D2964F171A42AE81B6E4D7E98DD77A /* CosmeticsShelfUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CosmeticsShelfUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +127,7 @@
 		DD79172E488D4358A7EDCBB15FBBCC1B /* CosmeticsShelf */ = {
 			isa = PBXGroup;
 			children = (
+				70A7594B9A7D42EF97F04557 /* Assets.xcassets */,
 				98F3E6C3D23E4F57B32B3B7A1B49274C /* CosmeticsShelfApp.swift */,
 				F2BCCDEE1C884004A1094868D7F186F8 /* Models.swift */,
 				BC91B80E17B543819DB0FC2E8E317D20 /* NotificationScheduler.swift */,
@@ -149,6 +152,7 @@
 			buildPhases = (
 				83AC27DD0A8B46EBA2DF50B5CDA2333D /* Sources */,
 				72AF1CBBB5FA440787D2CDD8E649A89A /* Frameworks */,
+				72411A99712544DFA10C6E74 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -235,6 +239,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		72411A99712544DFA10C6E74 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AC08C61A2AE4E16A8E4E2E8 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		83AC27DD0A8B46EBA2DF50B5CDA2333D /* Sources */ = {
@@ -337,6 +352,7 @@
 		39E47A3EE9714956971EF43438B9A467 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 257GWL6573;
@@ -359,6 +375,7 @@
 		86541B33C98D4236A3385836C030C949 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 257GWL6573;
