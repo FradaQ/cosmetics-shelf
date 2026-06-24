@@ -1,8 +1,18 @@
 # Cosmetics Shelf
 
+<p align="center">
+  <img src="docs/assets/app-icon.png" alt="Cosmetics Shelf app icon" width="180">
+</p>
+
 An iPhone app prototype for tracking beauty inventory across skincare, makeup, fragrance, hair/body, and other categories.
 
 The app is built with SwiftUI and SwiftData for iOS 17+. It stores products locally, estimates shelf life, and helps prioritize items before they expire.
+
+## Visual Direction
+
+Cosmetics Shelf uses a soft, chic skincare-inspired visual system with muted sage, dusty rose, warm cream, and small red/yellow/green status accents for expiry reminders.
+
+![Cosmetics Shelf color palette](docs/assets/color-palette.svg)
 
 ## Features
 
@@ -31,4 +41,3 @@ This is a working local prototype. Product info lookup uses a public beauty prod
 ## Validation
 
 The project has been built successfully with Xcode using the iPhone Simulator SDK.
-

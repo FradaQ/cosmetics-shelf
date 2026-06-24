@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1040" viewBox="0 0 1200 1040" role="img" aria-label="Cosmetics Shelf color palette">
+  <rect width="1200" height="1040" fill="#FFFFFF"/>
+  <style>
+    .title { font: 700 42px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #263B37; }
+    .section { font: 700 22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #263B37; letter-spacing: .5px; }
+    .name { font: 600 20px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #263B37; text-anchor: middle; }
+    .hex { font: 500 18px ui-monospace, "SFMono-Regular", Menlo, monospace; fill: #6D7F7A; text-anchor: middle; }
+  </style>
+
+  <text x="80" y="82" class="title">Cosmetics Shelf Palette</text>
+
+  <text x="80" y="150" class="section">Brand</text>
+  <circle cx="200" cy="230" r="42" fill="#4F827A"/>
+  <text x="200" y="305" class="name">Muted Sage Teal</text>
+  <text x="200" y="335" class="hex">#4F827A</text>
+
+  <circle cx="520" cy="230" r="42" fill="#C97B86"/>
+  <text x="520" y="305" class="name">Dusty Rose</text>
+  <text x="520" y="335" class="hex">#C97B86</text>
+
+  <circle cx="840" cy="230" r="42" fill="#E98578"/>
+  <text x="840" y="305" class="name">Soft Coral</text>
+  <text x="840" y="335" class="hex">#E98578</text>
+
+  <circle cx="200" cy="445" r="42" fill="#F3C4B8"/>
+  <text x="200" y="520" class="name">Blush Peach</text>
+  <text x="200" y="550" class="hex">#F3C4B8</text>
+
+  <text x="400" y="395" class="section">Neutrals</text>
+  <circle cx="520" cy="445" r="42" fill="#F8F1E8" stroke="#E7DDD2" stroke-width="2"/>
+  <text x="520" y="520" class="name">Warm Ivory</text>
+  <text x="520" y="550" class="hex">#F8F1E8</text>
+
+  <circle cx="840" cy="445" r="42" fill="#FFF8EF" stroke="#E7DDD2" stroke-width="2"/>
+  <text x="840" y="520" class="name">Soft Cream</text>
+  <text x="840" y="550" class="hex">#FFF8EF</text>
+
+  <text x="80" y="610" class="section">Text</text>
+  <circle cx="200" cy="690" r="42" fill="#263B37"/>
+  <text x="200" y="765" class="name">Deep Moss</text>
+  <text x="200" y="795" class="hex">#263B37</text>
+
+  <circle cx="520" cy="690" r="42" fill="#6D7F7A"/>
+  <text x="520" y="765" class="name">Sage Gray</text>
+  <text x="520" y="795" class="hex">#6D7F7A</text>
+
+  <text x="720" y="610" class="section">Status</text>
+  <circle cx="840" cy="690" r="42" fill="#D95F5F"/>
+  <text x="840" y="765" class="name">Expired Red</text>
+  <text x="840" y="795" class="hex">#D95F5F</text>
+
+  <circle cx="360" cy="880" r="42" fill="#EBCB6A"/>
+  <text x="360" y="955" class="name">Use Soon Yellow</text>
+  <text x="360" y="985" class="hex">#EBCB6A</text>
+
+  <circle cx="680" cy="880" r="42" fill="#8DBF91"/>
+  <text x="680" y="955" class="name">Good Sage</text>
+  <text x="680" y="985" class="hex">#8DBF91</text>
+</svg>
