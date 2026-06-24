@@ -12,7 +12,7 @@ The app is built with SwiftUI and SwiftData for iOS 17+. It stores products loca
 
 Cosmetics Shelf uses a soft, chic skincare-inspired visual system with muted sage, dusty rose, warm cream, and small red/yellow/green status accents for expiry reminders.
 
-![Cosmetics Shelf color palette](docs/assets/color-palette.svg)
+![Cosmetics Shelf color palette](docs/assets/color-palette.png)
 
 ## Features
 
