@@ -35,6 +35,7 @@ This is a working local prototype. Product info lookup uses a public beauty prod
 
 - [Product info lookup PRD](docs/product-info-lookup-prd.md)
 - [Product info and batch lookup design doc](docs/product-info-lookup-design.md)
+- [Prompt for a future lookup API project](docs/api-project-prompt.md)
 
 ## Run Locally
 

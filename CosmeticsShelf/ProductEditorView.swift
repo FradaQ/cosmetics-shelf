@@ -148,7 +148,8 @@ struct ProductEditorView: View {
                     englishName: $englishName,
                     brand: $brand,
                     productImageURL: $productImageURL,
-                    officialProductURL: $officialProductURL
+                    officialProductURL: $officialProductURL,
+                    category: $category
                 )
             }
         }
