@@ -61,7 +61,7 @@ struct ProductInfoLookupSheet: View {
                     .accessibilityIdentifier("productLookupSearchButton")
                     .disabled(isSearching)
                 } footer: {
-                    Text(AppStrings.text("会优先查询公开美妆产品数据库，并用来源和可信度标记候选。若没有准确结果，可以继续手动输入官网链接。", "Searches a public beauty product database first and labels candidates by source and confidence. If nothing is accurate, continue with manual official links."))
+                    Text(AppStrings.text("会优先查询本地产品资料 API，并用来源和可信度标记候选。若没有准确结果，可以继续手动输入官网链接。", "Searches the local product lookup API first and labels candidates by source and confidence. If nothing is accurate, continue with manual official links."))
                 }
 
                 if isSearching {
@@ -144,7 +144,7 @@ struct ProductInfoLookupSheet: View {
         selectedCandidate = nil
 
         do {
-            candidates = try await service.searchProducts(query: searchQuery)
+            candidates = try await service.searchProducts(query: query, brand: lookupBrand)
         } catch {
             candidates = []
             errorMessage = error.localizedDescription
@@ -183,11 +183,6 @@ struct ProductInfoLookupSheet: View {
         }
     }
 
-    private var searchQuery: String {
-        [lookupBrand, query]
-            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-            .joined(separator: " ")
-    }
 }
 
 private struct ProductCandidateRow: View {

@@ -219,7 +219,7 @@ struct ProductEditorView: View {
 
     private func lookupBatchCode() async {
         let service = ProductLookupService()
-        let result = await service.lookupBatchCode(brand: brand, batchCode: batchCode)
+        let result = await service.lookupBatchCode(brand: brand, batchCode: batchCode, category: category)
 
         guard let result else {
             batchLookupMessage = AppStrings.text(

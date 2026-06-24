@@ -24,12 +24,12 @@ Cosmetics Shelf uses a soft, chic skincare-inspired visual system with muted sag
 - Use the earliest available expiry date as the recommended expiry
 - Show products in the reminder list 6 months before suggested expiry
 - Schedule local notifications for use-soon reminders
-- Search public beauty product data by name and fill in candidate name, brand, image URL, and source URL
+- Search the companion lookup API by name and fill in candidate name, brand, image URL, source URL, source, and confidence
 - Keep manual entry as a fallback when product or batch-code lookup is unavailable
 
 ## Current Status
 
-This is a working local prototype. Product info lookup uses a public beauty product database first, while official product URLs and image URLs can still be entered manually. Batch-code parsing is prepared as a feature entry point, but brand-specific reliable parsing rules still need to be added.
+This is a working local prototype. Product info lookup now tries the companion lookup API first, then falls back to a public beauty product database if the local API is unavailable. Official product URLs and image URLs can still be entered manually. Batch-code parsing calls the companion API, but brand-specific reliable parsing rules still need to be added on the API side.
 
 ## Planning Docs
 
@@ -43,6 +43,25 @@ This is a working local prototype. Product info lookup uses a public beauty prod
 2. Select an iPhone Simulator or connected iPhone.
 3. In `Signing & Capabilities`, choose your Apple ID team if running on a physical device.
 4. Press `Run`.
+
+## Local API
+
+The app defaults to the local API base URL:
+
+```text
+http://127.0.0.1:8000
+```
+
+For iPhone Simulator testing, run the companion API on the Mac:
+
+```bash
+cd /Users/fqin/Documents/Codex/2026-06-24/i-want-to-build-a-lightweight/work/cosmetics-shelf-api
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+For physical iPhone testing, `127.0.0.1` points to the phone itself. Run the API with `--host 0.0.0.0` and configure the app to use the Mac's local network IP, or deploy the API and use its HTTPS URL.
+
+The API base URL is read from the generated Info.plist key `CosmeticsShelfAPIBaseURL`.
 
 ## Validation
 

@@ -90,13 +90,119 @@ enum LookupError: LocalizedError {
 }
 
 struct ProductLookupService {
-    func searchProducts(query: String) async throws -> [ProductSearchCandidate] {
-        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedQuery.isEmpty else { throw LookupError.emptyQuery }
+    private let apiBaseURL: URL?
+    private let urlSession: URLSession
 
+    init(
+        apiBaseURL: URL? = ProductLookupService.defaultAPIBaseURL,
+        urlSession: URLSession = .shared
+    ) {
+        self.apiBaseURL = apiBaseURL
+        self.urlSession = urlSession
+    }
+
+    func searchProducts(query: String, brand: String = "", barcode: String = "") async throws -> [ProductSearchCandidate] {
+        let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedBarcode = barcode.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedQuery.isEmpty || !trimmedBarcode.isEmpty else { throw LookupError.emptyQuery }
+
+        if let apiBaseURL {
+            do {
+                let candidates = try await searchProductsFromAPI(
+                    baseURL: apiBaseURL,
+                    query: trimmedQuery,
+                    brand: brand,
+                    barcode: trimmedBarcode
+                )
+                if !candidates.isEmpty {
+                    return candidates
+                }
+            } catch {
+                // Keep lookup useful while the local API is offline or still being developed.
+            }
+        }
+
+        guard !trimmedQuery.isEmpty else { throw LookupError.noResults }
+
+        return try await searchProductsFromOpenBeautyFacts(query: trimmedQuery)
+    }
+
+    func lookupBatchCode(brand: String, batchCode: String, category: ProductCategory = .other) async -> BatchCodeLookupResult? {
+        guard let apiBaseURL else { return nil }
+
+        let trimmedBrand = brand.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedBatchCode = batchCode.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedBrand.isEmpty, !trimmedBatchCode.isEmpty else { return nil }
+
+        do {
+            let url = apiBaseURL.appending(path: "v1/batch-lookup")
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.timeoutInterval = 8
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.httpBody = try JSONEncoder().encode(
+                APIBatchLookupRequest(
+                    brand: trimmedBrand,
+                    batchCode: trimmedBatchCode,
+                    category: category.apiValue
+                )
+            )
+
+            let (data, response) = try await urlSession.data(for: request)
+            try validate(response: response)
+
+            let lookup = try JSONDecoder().decode(APIBatchLookupResponse.self, from: data)
+            guard lookup.result == "found" else { return nil }
+
+            return BatchCodeLookupResult(
+                manufactureDate: lookup.manufactureDate.flatMap(Self.dateFormatter.date(from:)),
+                expiryDate: lookup.expiryDate.flatMap(Self.dateFormatter.date(from:)),
+                sourceDescription: lookup.sourceDescription
+            )
+        } catch {
+            return nil
+        }
+    }
+
+    private func searchProductsFromAPI(
+        baseURL: URL,
+        query: String,
+        brand: String,
+        barcode: String
+    ) async throws -> [ProductSearchCandidate] {
+        let url = baseURL.appending(path: "v1/product-lookup")
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.timeoutInterval = 10
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = try JSONEncoder().encode(
+            APIProductLookupRequest(
+                query: query,
+                brand: brand.trimmingCharacters(in: .whitespacesAndNewlines),
+                barcode: barcode,
+                locale: Locale.current.identifier.replacingOccurrences(of: "_", with: "-"),
+                preferredLanguage: Locale.preferredLanguages.first?
+                    .split(separator: "-")
+                    .first
+                    .map(String.init) ?? "en"
+            )
+        )
+
+        let (data, response) = try await urlSession.data(for: request)
+        try validate(response: response)
+
+        let lookup = try JSONDecoder().decode(APIProductLookupResponse.self, from: data)
+        return lookup.candidates
+            .compactMap(ProductSearchCandidate.init(apiCandidate:))
+            .sortedForLookup()
+    }
+
+    private func searchProductsFromOpenBeautyFacts(query: String) async throws -> [ProductSearchCandidate] {
         var components = URLComponents(string: "https://world.openbeautyfacts.org/cgi/search.pl")
         components?.queryItems = [
-            URLQueryItem(name: "search_terms", value: trimmedQuery),
+            URLQueryItem(name: "search_terms", value: query),
             URLQueryItem(name: "search_simple", value: "1"),
             URLQueryItem(name: "action", value: "process"),
             URLQueryItem(name: "json", value: "1"),
@@ -109,10 +215,12 @@ struct ProductLookupService {
         var request = URLRequest(url: url)
         request.setValue("CosmeticsShelf/1.0 (personal prototype)", forHTTPHeaderField: "User-Agent")
 
-        let (data, _) = try await URLSession.shared.data(for: request)
-        let response = try JSONDecoder().decode(OpenBeautyFactsSearchResponse.self, from: data)
-        let candidates = response.products
-            .compactMap { ProductSearchCandidate(product: $0, query: trimmedQuery) }
+        let (data, response) = try await urlSession.data(for: request)
+        try validate(response: response)
+
+        let searchResponse = try JSONDecoder().decode(OpenBeautyFactsSearchResponse.self, from: data)
+        let candidates = searchResponse.products
+            .compactMap { ProductSearchCandidate(product: $0, query: query) }
             .sortedForLookup()
 
         if candidates.isEmpty {
@@ -122,8 +230,11 @@ struct ProductLookupService {
         return candidates
     }
 
-    func lookupBatchCode(brand: String, batchCode: String) async -> BatchCodeLookupResult? {
-        nil
+    private func validate(response: URLResponse) throws {
+        guard let httpResponse = response as? HTTPURLResponse else { return }
+        guard (200..<300).contains(httpResponse.statusCode) else {
+            throw LookupError.noResults
+        }
     }
 
     static func guessCategory(from text: String) -> ProductCategory? {
@@ -151,10 +262,67 @@ struct ProductLookupService {
 
         return nil
     }
+
+    private static var defaultAPIBaseURL: URL? {
+        if let value = Bundle.main.object(forInfoDictionaryKey: "CosmeticsShelfAPIBaseURL") as? String {
+            let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !trimmed.isEmpty, let url = URL(string: trimmed) {
+                return url
+            }
+        }
+
+        return URL(string: "http://127.0.0.1:8000")
+    }
+
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
 }
 
 private struct OpenBeautyFactsSearchResponse: Decodable {
     let products: [OpenBeautyFactsProduct]
+}
+
+private struct APIProductLookupRequest: Encodable {
+    let query: String
+    let brand: String
+    let barcode: String
+    let locale: String
+    let preferredLanguage: String
+}
+
+private struct APIProductLookupResponse: Decodable {
+    let candidates: [APIProductCandidate]
+}
+
+private struct APIProductCandidate: Decodable {
+    let id: String
+    let localName: String
+    let englishName: String
+    let brand: String
+    let category: String
+    let imageURL: URL?
+    let productPageURL: URL?
+    let source: LookupSource
+    let confidence: LookupConfidence
+    let matchReasons: [String]
+}
+
+private struct APIBatchLookupRequest: Encodable {
+    let brand: String
+    let batchCode: String
+    let category: String
+}
+
+private struct APIBatchLookupResponse: Decodable {
+    let result: String
+    let manufactureDate: String?
+    let expiryDate: String?
+    let sourceDescription: String
 }
 
 private struct OpenBeautyFactsProduct: Decodable {
@@ -178,6 +346,27 @@ private struct OpenBeautyFactsProduct: Decodable {
 }
 
 private extension ProductSearchCandidate {
+    init?(apiCandidate: APIProductCandidate) {
+        let localName = apiCandidate.localName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let englishName = apiCandidate.englishName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let brand = apiCandidate.brand.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard !localName.isEmpty || !englishName.isEmpty else {
+            return nil
+        }
+
+        self.id = apiCandidate.id
+        self.productName = localName
+        self.englishName = englishName
+        self.brand = brand
+        self.category = ProductCategory(apiValue: apiCandidate.category)
+        self.imageURL = apiCandidate.imageURL
+        self.sourceURL = apiCandidate.productPageURL
+        self.source = apiCandidate.source
+        self.confidence = apiCandidate.confidence
+        self.matchReasons = apiCandidate.matchReasons
+    }
+
     init?(product: OpenBeautyFactsProduct, query: String) {
         let localName = product.productName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let englishName = product.productNameEnglish?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -207,6 +396,40 @@ private extension ProductSearchCandidate {
         )
         self.confidence = ranking.confidence
         self.matchReasons = ranking.reasons
+    }
+}
+
+private extension ProductCategory {
+    init?(apiValue: String) {
+        switch apiValue {
+        case "skincare":
+            self = .skincare
+        case "makeup":
+            self = .makeup
+        case "fragrance":
+            self = .fragrance
+        case "hairBody":
+            self = .hairBody
+        case "unknown":
+            return nil
+        default:
+            return nil
+        }
+    }
+
+    var apiValue: String {
+        switch self {
+        case .skincare:
+            "skincare"
+        case .makeup:
+            "makeup"
+        case .fragrance:
+            "fragrance"
+        case .hairBody:
+            "hairBody"
+        case .other:
+            "unknown"
+        }
     }
 }
 
