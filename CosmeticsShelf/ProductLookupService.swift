@@ -124,7 +124,7 @@ struct ProductLookupService {
 
         guard !trimmedQuery.isEmpty else { throw LookupError.noResults }
 
-        return try await searchProductsFromOpenBeautyFacts(query: trimmedQuery)
+        return try await searchProductsFromOpenBeautyFacts(query: trimmedQuery, brand: brand)
     }
 
     func lookupBatchCode(brand: String, batchCode: String, category: ProductCategory = .other) async -> BatchCodeLookupResult? {
@@ -199,10 +199,15 @@ struct ProductLookupService {
             .sortedForLookup()
     }
 
-    private func searchProductsFromOpenBeautyFacts(query: String) async throws -> [ProductSearchCandidate] {
+    private func searchProductsFromOpenBeautyFacts(query: String, brand: String) async throws -> [ProductSearchCandidate] {
+        let trimmedBrand = brand.trimmingCharacters(in: .whitespacesAndNewlines)
+        let searchTerms = [trimmedBrand, query]
+            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+            .joined(separator: " ")
+
         var components = URLComponents(string: "https://world.openbeautyfacts.org/cgi/search.pl")
         components?.queryItems = [
-            URLQueryItem(name: "search_terms", value: query),
+            URLQueryItem(name: "search_terms", value: searchTerms),
             URLQueryItem(name: "search_simple", value: "1"),
             URLQueryItem(name: "action", value: "process"),
             URLQueryItem(name: "json", value: "1"),
@@ -219,9 +224,13 @@ struct ProductLookupService {
         try validate(response: response)
 
         let searchResponse = try JSONDecoder().decode(OpenBeautyFactsSearchResponse.self, from: data)
-        let candidates = searchResponse.products
+        var candidates = searchResponse.products
             .compactMap { ProductSearchCandidate(product: $0, query: query) }
             .sortedForLookup()
+
+        if !trimmedBrand.isEmpty {
+            candidates = candidates.filter { $0.brand.matchesBrand(trimmedBrand) }
+        }
 
         if candidates.isEmpty {
             throw LookupError.noResults
@@ -523,5 +532,17 @@ private extension String {
         folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
             .replacingOccurrences(of: "[^a-z0-9\\p{Han}]+", with: " ", options: .regularExpression)
             .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    var normalizedBrandForLookup: String {
+        folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+            .replacingOccurrences(of: "[^a-z0-9\\p{Han}]+", with: "", options: .regularExpression)
+    }
+
+    func matchesBrand(_ requestedBrand: String) -> Bool {
+        let requested = requestedBrand.normalizedBrandForLookup
+        let candidate = normalizedBrandForLookup
+        guard !requested.isEmpty, !candidate.isEmpty else { return false }
+        return requested == candidate || requested.contains(candidate) || candidate.contains(requested)
     }
 }
