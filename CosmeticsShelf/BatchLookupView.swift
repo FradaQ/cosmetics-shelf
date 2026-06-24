@@ -19,14 +19,17 @@ struct BatchLookupView: View {
             Form {
                 Section {
                     TextField(AppStrings.text("品牌", "Brand"), text: $brand)
+                        .accessibilityIdentifier("batchLookupBrandField")
                     TextField(AppStrings.text("批号", "Batch code"), text: $batchCode)
                         .textInputAutocapitalization(.characters)
+                        .accessibilityIdentifier("batchLookupCodeField")
 
                     Button {
                         openSearch()
                     } label: {
                         Label(AppStrings.text("搜索批号生产日期", "Search batch manufacture date"), systemImage: "magnifyingglass")
                     }
+                    .accessibilityIdentifier("batchLookupSearchButton")
                     .disabled(brand.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || batchCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 } header: {
                     Text(AppStrings.text("批号查询", "Batch Lookup"))

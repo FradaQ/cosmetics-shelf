@@ -62,6 +62,7 @@ struct InventoryView: View {
                     } label: {
                         Label(AppStrings.text("添加", "Add"), systemImage: "plus")
                     }
+                    .accessibilityIdentifier("addProductButton")
                 }
             }
             .sheet(isPresented: $isPresentingEditor) {

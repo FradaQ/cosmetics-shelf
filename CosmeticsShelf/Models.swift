@@ -190,24 +190,28 @@ final class ProductItem {
     }
 
     var expiryDate: Date? {
+        expiryCandidates.min { $0.date < $1.date }?.date
+    }
+
+    private var expiryCandidates: [(date: Date, source: ExpirySource)] {
         let calendar = Calendar.current
-        var candidates: [Date] = []
+        var candidates: [(date: Date, source: ExpirySource)] = []
 
         if let manualExpiryDate {
-            candidates.append(manualExpiryDate)
+            candidates.append((manualExpiryDate, .manual))
         }
 
         if let manufactureDate,
            let unopenedDate = calendar.date(byAdding: .month, value: unopenedShelfLifeMonths, to: manufactureDate) {
-            candidates.append(unopenedDate)
+            candidates.append((unopenedDate, .unopened))
         }
 
         if let openedDate,
            let openedExpiry = calendar.date(byAdding: .month, value: periodAfterOpeningMonths, to: openedDate) {
-            candidates.append(openedExpiry)
+            candidates.append((openedExpiry, .opened))
         }
 
-        return candidates.min()
+        return candidates
     }
 
     var remindFromDate: Date? {
@@ -232,9 +236,7 @@ final class ProductItem {
     }
 
     var expiryBasis: ExpirySource {
-        if manualExpiryDate != nil { return .manual }
-        if openedDate != nil { return .opened }
-        return .unopened
+        expiryCandidates.min { $0.date < $1.date }?.source ?? .unopened
     }
 }
 

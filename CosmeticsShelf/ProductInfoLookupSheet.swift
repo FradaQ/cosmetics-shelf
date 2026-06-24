@@ -40,12 +40,14 @@ struct ProductInfoLookupSheet: View {
                 Section {
                     TextField(AppStrings.text("输入产品名称", "Enter product name"), text: $query)
                         .textInputAutocapitalization(.words)
+                        .accessibilityIdentifier("productLookupQueryField")
 
                     Button {
                         Task { await search() }
                     } label: {
                         Label(AppStrings.text("自动查找产品资料", "Find Product Info"), systemImage: "magnifyingglass")
                     }
+                    .accessibilityIdentifier("productLookupSearchButton")
                     .disabled(isSearching)
                 } footer: {
                     Text(AppStrings.text("会优先查询公开美妆产品数据库。若没有准确结果，可以继续手动输入官网链接。", "Searches a public beauty product database first. If nothing is accurate, continue with manual official links."))
@@ -186,4 +188,3 @@ private struct ProductCandidateRow: View {
         .padding(.vertical, 4)
     }
 }
-

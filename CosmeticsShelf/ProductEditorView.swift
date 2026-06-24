@@ -47,10 +47,14 @@ struct ProductEditorView: View {
                     } label: {
                         Label(AppStrings.text("自动查找产品资料", "Find Product Info Automatically"), systemImage: "sparkle.magnifyingglass")
                     }
+                    .accessibilityIdentifier("findProductInfoButton")
 
                     TextField(AppStrings.text("本地名称/中文名", "Local name"), text: $localName)
+                        .accessibilityIdentifier("localNameField")
                     TextField(AppStrings.text("英文/官方名称", "English or official name"), text: $englishName)
+                        .accessibilityIdentifier("englishNameField")
                     TextField(AppStrings.text("品牌", "Brand"), text: $brand)
+                        .accessibilityIdentifier("brandField")
                     Picker(AppStrings.text("品类", "Category"), selection: $category) {
                         ForEach(ProductCategory.allCases) { category in
                             Label(category.localizedTitle, systemImage: category.symbol)
@@ -59,12 +63,14 @@ struct ProductEditorView: View {
                     }
                     TextField(AppStrings.text("批号", "Batch code"), text: $batchCode)
                         .textInputAutocapitalization(.characters)
+                        .accessibilityIdentifier("batchCodeField")
 
                     Button {
                         Task { await lookupBatchCode() }
                     } label: {
                         Label(AppStrings.text("用批号自动查生产日期", "Look Up Dates from Batch Code"), systemImage: "number.square")
                     }
+                    .accessibilityIdentifier("lookupBatchCodeButton")
                     .disabled(brand.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || batchCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
 
                     if let batchLookupMessage {
@@ -78,9 +84,11 @@ struct ProductEditorView: View {
                     TextField(AppStrings.text("官网图片链接", "Official image URL"), text: $productImageURL)
                         .textInputAutocapitalization(.never)
                         .keyboardType(.URL)
+                        .accessibilityIdentifier("productImageURLField")
                     TextField(AppStrings.text("官网产品页链接", "Official product page URL"), text: $officialProductURL)
                         .textInputAutocapitalization(.never)
                         .keyboardType(.URL)
+                        .accessibilityIdentifier("officialProductURLField")
                     ProductImagePreview(imageURL: URL(string: productImageURL), category: category)
                 } header: {
                     Text(AppStrings.text("官网资料", "Official product info"))
@@ -130,6 +138,7 @@ struct ProductEditorView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(AppStrings.text("保存", "Save"), action: save)
                         .disabled(!canSave)
+                        .accessibilityIdentifier("saveProductButton")
                 }
             }
             .onAppear(perform: seedForm)

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		028C09D2C69D406BBD166787772AC12F /* CosmeticsShelfApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F3E6C3D23E4F57B32B3B7A1B49274C /* CosmeticsShelfApp.swift */; };
+		A08F897DF0F940108ACF30C868CACCBF /* ProductItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E57CEA941F24A8A8E79691C98231831 /* ProductItemTests.swift */; };
+		7E02B767B15149E3A427908F4CF66195 /* ProductLookupServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33ED47B0CF5437782856C9C8B378013 /* ProductLookupServiceTests.swift */; };
 		4F1B7503E94846D793444FBB5164AB40 /* InventoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C57FAAE8DEB444D28EAC904570F971E0 /* InventoryView.swift */; };
 		54B3F56F3033411695848A65A6122DF0 /* ReminderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 363DFCA9EA404DED8D887824F88EB8E1 /* ReminderView.swift */; };
 		6098EDF699BE429588D9DA5713CE0A45 /* ProductEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF0EF53D084A458F9E56016D23A0085D /* ProductEditorView.swift */; };
@@ -18,12 +20,34 @@
 		E4548B1F421349E8A112093AE69D54C6 /* ProductLookupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A420E859D601416783C56BDCF0BB30D9 /* ProductLookupService.swift */; };
 		FB7A18638D1C4414A097501D6A91BCC4 /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECC9DAC38E34BFCA88C1658A15C1C23 /* ProductDetailView.swift */; };
 		03DDCE15960E4D59A40AA068920A90C1 /* ProductInfoLookupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED47CB29DEE4CDA841BA1B1262646B9 /* ProductInfoLookupSheet.swift */; };
+		B7A9B405A5EE4553ACBA7C9DD5E22D9E /* CosmeticsShelfUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E70B59C8194AF980287B18C2D610F0 /* CosmeticsShelfUITests.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D474E1678E4E4602AD4BA19FE9808BF8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4F18630D09674EDBBC9D1FC48D93E7DA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3CF0F221740F47A4950DF5CBE04FDD38;
+			remoteInfo = CosmeticsShelf;
+		};
+		C8E43798B3FB4A9EB622579B802773AE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4F18630D09674EDBBC9D1FC48D93E7DA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3CF0F221740F47A4950DF5CBE04FDD38;
+			remoteInfo = CosmeticsShelf;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		0E57CEA941F24A8A8E79691C98231831 /* ProductItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductItemTests.swift; sourceTree = "<group>"; };
+		F33ED47B0CF5437782856C9C8B378013 /* ProductLookupServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductLookupServiceTests.swift; sourceTree = "<group>"; };
 		363DFCA9EA404DED8D887824F88EB8E1 /* ReminderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderView.swift; sourceTree = "<group>"; };
 		5F9ED8A7ADC94B409AC0886FBD3EDE90 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
 		98F3E6C3D23E4F57B32B3B7A1B49274C /* CosmeticsShelfApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CosmeticsShelfApp.swift; sourceTree = "<group>"; };
+		63CA26683141465CB75C1B8AFE98C81B /* CosmeticsShelfTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CosmeticsShelfTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		89D2964F171A42AE81B6E4D7E98DD77A /* CosmeticsShelfUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CosmeticsShelfUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC91B80E17B543819DB0FC2E8E317D20 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		BE42EED39226469CA9AECEA41FCD3174 /* BatchLookupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchLookupView.swift; sourceTree = "<group>"; };
 		CED47CB29DEE4CDA841BA1B1262646B9 /* ProductInfoLookupSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInfoLookupSheet.swift; sourceTree = "<group>"; };
@@ -33,10 +57,25 @@
 		EFD1AE2463C3468B97EB7E8C8369CCDA /* CosmeticsShelf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CosmeticsShelf.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2BCCDEE1C884004A1094868D7F186F8 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		A420E859D601416783C56BDCF0BB30D9 /* ProductLookupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductLookupService.swift; sourceTree = "<group>"; };
+		D7E70B59C8194AF980287B18C2D610F0 /* CosmeticsShelfUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CosmeticsShelfUITests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		72AF1CBBB5FA440787D2CDD8E649A89A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8A477BCBAC164D8AB31FB7798A2D69BB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DC2AC24EDD034684BEBB9046E031EBD1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -50,6 +89,8 @@
 			isa = PBXGroup;
 			children = (
 				EFD1AE2463C3468B97EB7E8C8369CCDA /* CosmeticsShelf.app */,
+				63CA26683141465CB75C1B8AFE98C81B /* CosmeticsShelfTests.xctest */,
+				89D2964F171A42AE81B6E4D7E98DD77A /* CosmeticsShelfUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -58,8 +99,27 @@
 			isa = PBXGroup;
 			children = (
 				DD79172E488D4358A7EDCBB15FBBCC1B /* CosmeticsShelf */,
+				B522095486E049B1B4729037741F04EB /* CosmeticsShelfTests */,
+				BC5DE3E6E78B4A3882F4188A0BDA18AD /* CosmeticsShelfUITests */,
 				215D27DAD5B34A69BC86C0143D7A9DA2 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		B522095486E049B1B4729037741F04EB /* CosmeticsShelfTests */ = {
+			isa = PBXGroup;
+			children = (
+				0E57CEA941F24A8A8E79691C98231831 /* ProductItemTests.swift */,
+				F33ED47B0CF5437782856C9C8B378013 /* ProductLookupServiceTests.swift */,
+			);
+			path = CosmeticsShelfTests;
+			sourceTree = "<group>";
+		};
+		BC5DE3E6E78B4A3882F4188A0BDA18AD /* CosmeticsShelfUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D7E70B59C8194AF980287B18C2D610F0 /* CosmeticsShelfUITests.swift */,
+			);
+			path = CosmeticsShelfUITests;
 			sourceTree = "<group>";
 		};
 		DD79172E488D4358A7EDCBB15FBBCC1B /* CosmeticsShelf */ = {
@@ -99,6 +159,40 @@
 			productReference = EFD1AE2463C3468B97EB7E8C8369CCDA /* CosmeticsShelf.app */;
 			productType = "com.apple.product-type.application";
 		};
+		42DCADA7643040CC8B2B9DC3A5D6F28E /* CosmeticsShelfTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3293718127754CF9B594F747D59215EA /* Build configuration list for PBXNativeTarget "CosmeticsShelfTests" */;
+			buildPhases = (
+				A4C0B575F2E1468BA690DC3AD69DE031 /* Sources */,
+				8A477BCBAC164D8AB31FB7798A2D69BB /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				96BD735B1D354C8CAC0698AC67E88E3C /* PBXTargetDependency */,
+			);
+			name = CosmeticsShelfTests;
+			productName = CosmeticsShelfTests;
+			productReference = 63CA26683141465CB75C1B8AFE98C81B /* CosmeticsShelfTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8787EF45BF594D1FABBD665744AB1563 /* CosmeticsShelfUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A06D0796861B4E65BF45FEF81A37419B /* Build configuration list for PBXNativeTarget "CosmeticsShelfUITests" */;
+			buildPhases = (
+				4055FDF337014EE4A0632F0F585BACC1 /* Sources */,
+				DC2AC24EDD034684BEBB9046E031EBD1 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0FB67B16FC76425DA6113BFB6DD3BEC9 /* PBXTargetDependency */,
+			);
+			name = CosmeticsShelfUITests;
+			productName = CosmeticsShelfUITests;
+			productReference = 89D2964F171A42AE81B6E4D7E98DD77A /* CosmeticsShelfUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -111,6 +205,14 @@
 				TargetAttributes = {
 					3CF0F221740F47A4950DF5CBE04FDD38 = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					42DCADA7643040CC8B2B9DC3A5D6F28E = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 3CF0F221740F47A4950DF5CBE04FDD38;
+					};
+					8787EF45BF594D1FABBD665744AB1563 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 3CF0F221740F47A4950DF5CBE04FDD38;
 					};
 				};
 			};
@@ -128,6 +230,8 @@
 			projectRoot = "";
 			targets = (
 				3CF0F221740F47A4950DF5CBE04FDD38 /* CosmeticsShelf */,
+				42DCADA7643040CC8B2B9DC3A5D6F28E /* CosmeticsShelfTests */,
+				8787EF45BF594D1FABBD665744AB1563 /* CosmeticsShelfUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -151,9 +255,129 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A4C0B575F2E1468BA690DC3AD69DE031 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A08F897DF0F940108ACF30C868CACCBF /* ProductItemTests.swift in Sources */,
+				7E02B767B15149E3A427908F4CF66195 /* ProductLookupServiceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4055FDF337014EE4A0632F0F585BACC1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7A9B405A5EE4553ACBA7C9DD5E22D9E /* CosmeticsShelfUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		96BD735B1D354C8CAC0698AC67E88E3C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3CF0F221740F47A4950DF5CBE04FDD38 /* CosmeticsShelf */;
+			targetProxy = D474E1678E4E4602AD4BA19FE9808BF8 /* PBXContainerItemProxy */;
+		};
+		0FB67B16FC76425DA6113BFB6DD3BEC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3CF0F221740F47A4950DF5CBE04FDD38 /* CosmeticsShelf */;
+			targetProxy = C8E43798B3FB4A9EB622579B802773AE /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		D1D6A2B473E5495AB9A168A8BEF92C7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 257GWL6573;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.frada.CosmeticsShelfTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CosmeticsShelf.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CosmeticsShelf";
+			};
+			name = Debug;
+		};
+		18F706A0E5A54CEFAD8F2804951D7268 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 257GWL6573;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.frada.CosmeticsShelfTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CosmeticsShelf.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CosmeticsShelf";
+			};
+			name = Release;
+		};
+		39E47A3EE9714956971EF43438B9A467 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 257GWL6573;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.frada.CosmeticsShelfUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = CosmeticsShelf;
+			};
+			name = Debug;
+		};
+		86541B33C98D4236A3385836C030C949 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 257GWL6573;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.frada.CosmeticsShelfUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = CosmeticsShelf;
+			};
+			name = Release;
+		};
 		259131E96BD144F7A8A890F99BB5CF22 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -336,6 +560,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3293718127754CF9B594F747D59215EA /* Build configuration list for PBXNativeTarget "CosmeticsShelfTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D1D6A2B473E5495AB9A168A8BEF92C7F /* Debug */,
+				18F706A0E5A54CEFAD8F2804951D7268 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A06D0796861B4E65BF45FEF81A37419B /* Build configuration list for PBXNativeTarget "CosmeticsShelfUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				39E47A3EE9714956971EF43438B9A467 /* Debug */,
+				86541B33C98D4236A3385836C030C949 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		60788DC0ACDB437682520E485B341F48 /* Build configuration list for PBXNativeTarget "CosmeticsShelf" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
