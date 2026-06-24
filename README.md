@@ -31,6 +31,11 @@ Cosmetics Shelf uses a soft, chic skincare-inspired visual system with muted sag
 
 This is a working local prototype. Product info lookup uses a public beauty product database first, while official product URLs and image URLs can still be entered manually. Batch-code parsing is prepared as a feature entry point, but brand-specific reliable parsing rules still need to be added.
 
+## Planning Docs
+
+- [Product info lookup PRD](docs/product-info-lookup-prd.md)
+- [Product info and batch lookup design doc](docs/product-info-lookup-design.md)
+
 ## Run Locally
 
 1. Open `CosmeticsShelf.xcodeproj` in Xcode.
