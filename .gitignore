@@ -1,0 +1,12 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserstate
+xcuserdata/
+
+# macOS
+.DS_Store
+
+# Local working files
+work/
+outputs/*.zip
