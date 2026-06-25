@@ -22,6 +22,7 @@ struct ProductSearchCandidate: Identifiable, Hashable {
 
 enum LookupSource: String, Codable, Hashable {
     case officialWebsite
+    case authorizedRetailer
     case openBeautyFacts
     case localBatchRule
     case manual
@@ -30,6 +31,8 @@ enum LookupSource: String, Codable, Hashable {
         switch self {
         case .officialWebsite:
             AppStrings.text("官网", "Official")
+        case .authorizedRetailer:
+            AppStrings.text("授权零售商", "Retailer")
         case .openBeautyFacts:
             "Open Beauty Facts"
         case .localBatchRule:
@@ -75,10 +78,11 @@ struct BatchCodeLookupResult {
     let sourceDescription: String
 }
 
-enum LookupError: LocalizedError {
+enum LookupError: LocalizedError, Equatable {
     case emptyQuery
     case noResults
     case noOfficialResults
+    case noRetailerResults
 
     var errorDescription: String? {
         switch self {
@@ -88,8 +92,13 @@ enum LookupError: LocalizedError {
             AppStrings.text("没有找到可用候选。", "No usable candidates found.")
         case .noOfficialResults:
             AppStrings.text(
-                "没有找到官网候选，请手动输入产品信息或添加官网链接。",
-                "No official candidate found. Enter product info manually or add an official product link."
+                "没有找到官网结果。是否尝试 Sephora 等授权零售商？",
+                "No official candidate found. Try Sephora or another authorized retailer?"
+            )
+        case .noRetailerResults:
+            AppStrings.text(
+                "没有找到官网或授权零售商候选，请手动输入产品信息或添加产品链接。",
+                "No official or authorized retailer candidate found. Enter product info manually or add a product link."
             )
         }
     }
@@ -113,12 +122,18 @@ struct ProductLookupService {
         barcode: String = "",
         officialProductPageURL: String = "",
         officialImageURL: String = "",
-        officialName: String = ""
+        officialName: String = "",
+        allowRetailerFallback: Bool = false,
+        preferredRetailers: [String] = [],
+        retailerProductPageURL: String = "",
+        retailerImageURL: String = "",
+        retailerName: String = "",
+        retailerProductName: String = ""
     ) async throws -> [ProductSearchCandidate] {
         let trimmedQuery = query.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedBarcode = barcode.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedQuery.isEmpty || !trimmedBarcode.isEmpty else { throw LookupError.emptyQuery }
-        guard let apiBaseURL else { throw LookupError.noOfficialResults }
+        guard let apiBaseURL else { throw allowRetailerFallback ? LookupError.noRetailerResults : LookupError.noOfficialResults }
 
         let candidates = try await searchProductsFromAPI(
             baseURL: apiBaseURL,
@@ -127,9 +142,17 @@ struct ProductLookupService {
             barcode: trimmedBarcode,
             officialProductPageURL: officialProductPageURL,
             officialImageURL: officialImageURL,
-            officialName: officialName
+            officialName: officialName,
+            allowRetailerFallback: allowRetailerFallback,
+            preferredRetailers: preferredRetailers,
+            retailerProductPageURL: retailerProductPageURL,
+            retailerImageURL: retailerImageURL,
+            retailerName: retailerName,
+            retailerProductName: retailerProductName
         )
-        guard !candidates.isEmpty else { throw LookupError.noOfficialResults }
+        guard !candidates.isEmpty else {
+            throw allowRetailerFallback ? LookupError.noRetailerResults : LookupError.noOfficialResults
+        }
         return candidates
     }
 
@@ -178,7 +201,13 @@ struct ProductLookupService {
         barcode: String,
         officialProductPageURL: String,
         officialImageURL: String,
-        officialName: String
+        officialName: String,
+        allowRetailerFallback: Bool,
+        preferredRetailers: [String],
+        retailerProductPageURL: String,
+        retailerImageURL: String,
+        retailerName: String,
+        retailerProductName: String
     ) async throws -> [ProductSearchCandidate] {
         let url = baseURL.appending(path: "v1/product-lookup")
         var request = URLRequest(url: url)
@@ -198,7 +227,13 @@ struct ProductLookupService {
                     .map(String.init) ?? "en",
                 officialProductPageURL: officialProductPageURL.nilIfBlank,
                 officialImageURL: officialImageURL.nilIfBlank,
-                officialName: officialName.nilIfBlank
+                officialName: officialName.nilIfBlank,
+                allowRetailerFallback: allowRetailerFallback,
+                preferredRetailers: preferredRetailers,
+                retailerProductPageURL: retailerProductPageURL.nilIfBlank,
+                retailerImageURL: retailerImageURL.nilIfBlank,
+                retailerName: retailerName.nilIfBlank,
+                retailerProductName: retailerProductName.nilIfBlank
             )
         )
 
@@ -273,6 +308,12 @@ private struct APIProductLookupRequest: Encodable {
     let officialProductPageURL: String?
     let officialImageURL: String?
     let officialName: String?
+    let allowRetailerFallback: Bool
+    let preferredRetailers: [String]
+    let retailerProductPageURL: String?
+    let retailerImageURL: String?
+    let retailerName: String?
+    let retailerProductName: String?
 }
 
 private struct APIProductLookupResponse: Decodable {

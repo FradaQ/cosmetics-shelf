@@ -18,6 +18,7 @@ struct ProductInfoLookupSheet: View {
     @State private var shouldReplaceExistingFields = false
     @State private var isSearching = false
     @State private var errorMessage: String?
+    @State private var canTryRetailerFallback = false
 
     private let service = ProductLookupService()
 
@@ -78,6 +79,15 @@ struct ProductInfoLookupSheet: View {
                     Section {
                         Text(errorMessage)
                             .foregroundStyle(.secondary)
+
+                        if canTryRetailerFallback {
+                            Button {
+                                Task { await search(allowRetailerFallback: true) }
+                            } label: {
+                                Label(AppStrings.text("尝试 Sephora 授权零售商结果", "Try Sephora Retailer Results"), systemImage: "magnifyingglass.circle")
+                            }
+                            .disabled(isSearching)
+                        }
                     }
                 }
 
@@ -138,10 +148,11 @@ struct ProductInfoLookupSheet: View {
         }
     }
 
-    private func search() async {
+    private func search(allowRetailerFallback: Bool = false) async {
         isSearching = true
         errorMessage = nil
         selectedCandidate = nil
+        canTryRetailerFallback = false
 
         do {
             candidates = try await service.searchProducts(
@@ -149,11 +160,17 @@ struct ProductInfoLookupSheet: View {
                 brand: lookupBrand,
                 officialProductPageURL: officialProductURL,
                 officialImageURL: productImageURL,
-                officialName: officialNameForLookup
+                officialName: officialNameForLookup,
+                allowRetailerFallback: allowRetailerFallback,
+                preferredRetailers: allowRetailerFallback ? ["sephora"] : [],
+                retailerProductPageURL: allowRetailerFallback ? officialProductURL : "",
+                retailerImageURL: allowRetailerFallback ? productImageURL : "",
+                retailerProductName: allowRetailerFallback ? officialNameForLookup : ""
             )
         } catch {
             candidates = []
             errorMessage = error.localizedDescription
+            canTryRetailerFallback = !allowRetailerFallback && (error as? LookupError) == .noOfficialResults
         }
 
         isSearching = false
@@ -246,7 +263,7 @@ private struct ProductCandidateRow: View {
                 }
 
                 HStack(spacing: 6) {
-                    LookupBadge(text: candidate.source.localizedTitle, tint: .teal)
+                    LookupBadge(text: candidate.source.localizedTitle, tint: candidate.source.tint)
                     LookupBadge(text: candidate.confidence.localizedTitle, tint: candidate.confidence.tint)
                 }
             }
@@ -260,6 +277,18 @@ private struct ProductCandidateRow: View {
             }
         }
         .padding(.vertical, 4)
+    }
+}
+
+private extension LookupSource {
+    var tint: Color {
+        switch self {
+        case .officialWebsite: .teal
+        case .authorizedRetailer: .indigo
+        case .openBeautyFacts: .blue
+        case .localBatchRule: .purple
+        case .manual: .secondary
+        }
     }
 }
 
