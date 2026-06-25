@@ -24,12 +24,12 @@ Cosmetics Shelf uses a soft, chic skincare-inspired visual system with muted sag
 - Use the earliest available expiry date as the recommended expiry
 - Show products in the reminder list 6 months before suggested expiry
 - Schedule local notifications for use-soon reminders
-- Search the companion lookup API by name and fill in candidate name, brand, image URL, source URL, source, and confidence
+- Search the companion lookup API for official product candidates and fill in candidate name, brand, image URL, source URL, source, and confidence
 - Keep manual entry as a fallback when product or batch-code lookup is unavailable
 
 ## Current Status
 
-This is a working local prototype. Product info lookup now tries the companion lookup API first, then falls back to a public beauty product database if the local API is unavailable. Official product URLs and image URLs can still be entered manually. Batch-code parsing calls the companion API, but brand-specific reliable parsing rules still need to be added on the API side.
+This is a working local prototype. Product info lookup now uses the companion API for official product candidates only. If no official candidate is found, the app asks the user to enter product information manually or add an official product link. Batch-code parsing calls the companion API, but brand-specific reliable parsing rules still need to be added on the API side.
 
 ## Planning Docs
 

@@ -35,7 +35,7 @@ struct ProductInfoLookupSheet: View {
         self._productImageURL = productImageURL
         self._officialProductURL = officialProductURL
         self._category = category
-        self._query = State(initialValue: [brand.wrappedValue, englishName.wrappedValue, localName.wrappedValue]
+        self._query = State(initialValue: [englishName.wrappedValue, localName.wrappedValue]
             .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
             .joined(separator: " "))
         self._lookupBrand = State(initialValue: brand.wrappedValue)
@@ -61,7 +61,7 @@ struct ProductInfoLookupSheet: View {
                     .accessibilityIdentifier("productLookupSearchButton")
                     .disabled(isSearching)
                 } footer: {
-                    Text(AppStrings.text("会优先查询本地产品资料 API，并用来源和可信度标记候选。若没有准确结果，可以继续手动输入官网链接。", "Searches the local product lookup API first and labels candidates by source and confidence. If nothing is accurate, continue with manual official links."))
+                    Text(AppStrings.text("会查询官网候选，并用来源和可信度标记结果。若没有准确结果，可以继续手动输入官网链接。", "Searches official product candidates and labels results by source and confidence. If nothing is accurate, continue with manual official links."))
                 }
 
                 if isSearching {
@@ -144,7 +144,13 @@ struct ProductInfoLookupSheet: View {
         selectedCandidate = nil
 
         do {
-            candidates = try await service.searchProducts(query: query, brand: lookupBrand)
+            candidates = try await service.searchProducts(
+                query: query,
+                brand: lookupBrand,
+                officialProductPageURL: officialProductURL,
+                officialImageURL: productImageURL,
+                officialName: officialNameForLookup
+            )
         } catch {
             candidates = []
             errorMessage = error.localizedDescription
@@ -181,6 +187,12 @@ struct ProductInfoLookupSheet: View {
         if let url = URL(string: "https://www.google.com/search?q=\(encoded)") {
             openURL(url)
         }
+    }
+
+    private var officialNameForLookup: String {
+        [englishName, localName]
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .first { !$0.isEmpty } ?? ""
     }
 
 }
