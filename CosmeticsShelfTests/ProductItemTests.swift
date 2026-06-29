@@ -80,4 +80,18 @@ final class ProductItemTests: XCTestCase {
         XCTAssertTrue(identifier.contains("2025"))
         XCTAssertTrue(identifier.contains("A12"))
     }
+
+    func testExpiryDisplayTextLabelsExpiryDate() throws {
+        let calendar = Calendar(identifier: .gregorian)
+        let manualExpiryDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 2027, month: 4, day: 20)))
+        let product = ProductItem(
+            name: "Cleanser",
+            brand: "Example",
+            category: .skincare,
+            manualExpiryDate: manualExpiryDate
+        )
+
+        XCTAssertTrue(product.expiryDisplayText.contains("2027"))
+        XCTAssertTrue(product.expiryDisplayText.contains(AppLanguage.isChinese ? "到期" : "Expires"))
+    }
 }

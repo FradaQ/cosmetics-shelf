@@ -192,6 +192,14 @@ final class ProductItem {
         return parts.joined(separator: " · ")
     }
 
+    var expiryDisplayText: String {
+        guard let expiryDate else {
+            return AppStrings.text("待补全", "Missing")
+        }
+
+        return AppStrings.text("到期 \(expiryDate.shelfFormatted)", "Expires \(expiryDate.shelfFormatted)")
+    }
+
     var productImage: URL? {
         URL(string: productImageURL.trimmingCharacters(in: .whitespacesAndNewlines))
     }

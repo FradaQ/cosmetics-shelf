@@ -176,7 +176,7 @@ struct ProductRow: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(product.status.tint)
                     .labelStyle(.titleAndIcon)
-                Text(product.expiryDate?.shelfFormatted ?? AppStrings.text("待补全", "Missing"))
+                Text(product.expiryDisplayText)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
