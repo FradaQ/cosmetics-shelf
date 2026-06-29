@@ -181,6 +181,17 @@ final class ProductItem {
             .first { !$0.isEmpty && $0 != displayName }
     }
 
+    var inventoryIdentifierText: String? {
+        let batch = batchCode.trimmingCharacters(in: .whitespacesAndNewlines)
+        let parts = [
+            manufactureDate.map { AppStrings.text("生产 \($0.shelfFormatted)", "Mfg \($0.shelfFormatted)") },
+            batch.isEmpty ? nil : AppStrings.text("批号 \(batch)", "Batch \(batch)")
+        ].compactMap { $0 }
+
+        guard !parts.isEmpty else { return nil }
+        return parts.joined(separator: " · ")
+    }
+
     var productImage: URL? {
         URL(string: productImageURL.trimmingCharacters(in: .whitespacesAndNewlines))
     }

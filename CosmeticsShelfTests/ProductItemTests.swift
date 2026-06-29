@@ -64,4 +64,20 @@ final class ProductItemTests: XCTestCase {
         XCTAssertEqual(product.productImage?.absoluteString, "https://example.com/product.jpg")
         XCTAssertEqual(product.officialProduct?.absoluteString, "https://example.com/product")
     }
+
+    func testInventoryIdentifierShowsManufactureDateAndBatchCode() throws {
+        let calendar = Calendar(identifier: .gregorian)
+        let manufactureDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 2025, month: 3, day: 14)))
+        let product = ProductItem(
+            name: "Cleanser",
+            brand: "Example",
+            category: .skincare,
+            batchCode: "A12",
+            manufactureDate: manufactureDate
+        )
+
+        let identifier = try XCTUnwrap(product.inventoryIdentifierText)
+        XCTAssertTrue(identifier.contains("2025"))
+        XCTAssertTrue(identifier.contains("A12"))
+    }
 }

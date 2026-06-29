@@ -161,10 +161,11 @@ struct ProductRow: View {
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
-                if !product.batchCode.isEmpty {
-                    Text(AppStrings.text("批号 \(product.batchCode)", "Batch \(product.batchCode)"))
+                if let inventoryIdentifierText = product.inventoryIdentifierText {
+                    Text(inventoryIdentifierText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
             }
 
