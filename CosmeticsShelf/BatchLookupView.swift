@@ -8,6 +8,9 @@ struct BatchLookupView: View {
     @State private var hasManufactureDate = false
     @State private var shelfLifeMonths = 36
     @State private var openingMonths = 12
+    @State private var isLookingUp = false
+    @State private var lookupMessage: String?
+    @State private var externalLookup: SuggestedExternalLookup?
 
     private var estimatedExpiryDate: Date? {
         guard hasManufactureDate else { return nil }
@@ -25,16 +28,46 @@ struct BatchLookupView: View {
                         .accessibilityIdentifier("batchLookupCodeField")
 
                     Button {
-                        openSearch()
+                        Task { await lookupBatchCode() }
                     } label: {
-                        Label(AppStrings.text("搜索批号生产日期", "Search batch manufacture date"), systemImage: "magnifyingglass")
+                        Label(
+                            isLookingUp
+                                ? AppStrings.text("查询中...", "Looking up...")
+                                : AppStrings.text("查询批号", "Look up batch code"),
+                            systemImage: "magnifyingglass"
+                        )
                     }
                     .accessibilityIdentifier("batchLookupSearchButton")
-                    .disabled(brand.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || batchCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .disabled(isLookingUp || brand.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || batchCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
+                    if let lookupMessage {
+                        Text(lookupMessage)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if let externalLookup {
+                        Button {
+                            openURL(externalLookup.url)
+                        } label: {
+                            Label(
+                                AppStrings.text(
+                                    "去 \(externalLookup.name) 查询",
+                                    "Check on \(externalLookup.name)"
+                                ),
+                                systemImage: "safari"
+                            )
+                        }
+                        .accessibilityIdentifier("batchLookupExternalLookupButton")
+
+                        Text(externalLookup.note)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 } header: {
                     Text(AppStrings.text("批号查询", "Batch Lookup"))
                 } footer: {
-                    Text(AppStrings.text("第一版先帮你组织搜索词和记录估算结果。后续可以把你信任的网站或品牌规则接成自动解析。", "This version helps compose the search and record estimates. Trusted sites or brand-specific rules can be automated next."))
+                    Text(AppStrings.text("没有可靠品牌规则时，应用会建议外部查询并让你手动记录日期。", "When no reliable brand rule exists, the app suggests an external lookup and lets you record dates manually."))
                 }
 
                 Section {
@@ -62,11 +95,38 @@ struct BatchLookupView: View {
         }
     }
 
-    private func openSearch() {
-        let query = "\(brand) \(batchCode.uppercased()) cosmetic batch code manufacture date"
-            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        if let url = URL(string: "https://www.google.com/search?q=\(query)") {
-            openURL(url)
+    @MainActor
+    private func lookupBatchCode() async {
+        isLookingUp = true
+        defer { isLookingUp = false }
+
+        let service = ProductLookupService()
+        guard let result = await service.lookupBatchCode(brand: brand, batchCode: batchCode) else {
+            externalLookup = nil
+            lookupMessage = AppStrings.text(
+                "没有找到可靠的批号解析结果，请手动输入生产日期。",
+                "No reliable batch-code result found. Enter the manufacture date manually."
+            )
+            return
+        }
+
+        externalLookup = result.suggestedExternalLookup
+        lookupMessage = result.message ?? result.sourceDescription
+
+        if let manufactureDate = result.manufactureDate {
+            self.manufactureDate = manufactureDate
+            hasManufactureDate = true
+        }
+
+        if let expiryDate = result.expiryDate {
+            let components = Calendar.current.dateComponents(
+                [.month],
+                from: manufactureDate,
+                to: expiryDate
+            )
+            if let months = components.month, months > 0 {
+                shelfLifeMonths = months
+            }
         }
     }
 }
