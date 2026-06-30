@@ -14,6 +14,60 @@ final class ProductLookupServiceTests: XCTestCase {
         XCTAssertNil(result)
     }
 
+    func testBatchCodeLookupDecodesExternalSuggestionWhenNoResult() async throws {
+        let session = URLSession(configuration: .mocked)
+        let service = ProductLookupService(
+            apiBaseURL: try XCTUnwrap(URL(string: "http://example.test")),
+            urlSession: session
+        )
+
+        MockURLProtocol.requestHandler = { request in
+            let body = try requestBodyData(from: request)
+            let json = try JSONSerialization.jsonObject(with: body) as? [String: Any]
+
+            XCTAssertEqual(json?["brand"] as? String, "Tatcha")
+            XCTAssertEqual(json?["batchCode"] as? String, "ABC123")
+            XCTAssertEqual(json?["category"] as? String, "skincare")
+
+            let response = try XCTUnwrap(HTTPURLResponse(
+                url: try XCTUnwrap(request.url),
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: ["Content-Type": "application/json"]
+            ))
+            let data = Data("""
+            {
+              "result": "no_result",
+              "manufactureDate": null,
+              "expiryDate": null,
+              "confidence": null,
+              "source": "unsupported",
+              "sourceDescription": "No reliable brand-specific batch-code rule is configured.",
+              "message": "Use manual manufacture or expiry date entry in the app.",
+              "suggestedExternalLookup": {
+                "name": "CheckFresh",
+                "url": "https://www.checkfresh.com/",
+                "note": "External informational lookup. Verify the result before saving dates."
+              }
+            }
+            """.utf8)
+            return (response, data)
+        }
+
+        let result = await service.lookupBatchCode(
+            brand: "Tatcha",
+            batchCode: "ABC123",
+            category: .skincare
+        )
+
+        let lookup = try XCTUnwrap(result)
+        XCTAssertNil(lookup.manufactureDate)
+        XCTAssertNil(lookup.expiryDate)
+        XCTAssertEqual(lookup.message, "Use manual manufacture or expiry date entry in the app.")
+        XCTAssertEqual(lookup.suggestedExternalLookup?.name, "CheckFresh")
+        XCTAssertEqual(lookup.suggestedExternalLookup?.url.absoluteString, "https://www.checkfresh.com/")
+    }
+
     func testGuessCategoryFromProductName() {
         XCTAssertEqual(ProductLookupService.guessCategory(from: "Libre Eau de Parfum"), .fragrance)
         XCTAssertEqual(ProductLookupService.guessCategory(from: "Soft Matte Lipstick"), .makeup)

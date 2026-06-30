@@ -4,6 +4,7 @@ import SwiftUI
 struct ProductEditorView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.openURL) private var openURL
 
     var product: ProductItem?
 
@@ -27,6 +28,7 @@ struct ProductEditorView: View {
     @State private var notes = ""
     @State private var isShowingProductLookup = false
     @State private var batchLookupMessage: String?
+    @State private var batchExternalLookup: SuggestedExternalLookup?
 
     private var canSave: Bool {
         !primaryProductName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -76,6 +78,25 @@ struct ProductEditorView: View {
                     if let batchLookupMessage {
                         Text(batchLookupMessage)
                             .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if let batchExternalLookup {
+                        Button {
+                            openURL(batchExternalLookup.url)
+                        } label: {
+                            Label(
+                                AppStrings.text(
+                                    "去 \(batchExternalLookup.name) 查询",
+                                    "Check on \(batchExternalLookup.name)"
+                                ),
+                                systemImage: "safari"
+                            )
+                        }
+                        .accessibilityIdentifier("batchExternalLookupButton")
+
+                        Text(batchExternalLookup.note)
+                            .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -226,6 +247,7 @@ struct ProductEditorView: View {
                 "没有找到可靠的批号解析结果，请手动输入生产日期或到期日。",
                 "No reliable batch-code result found. Enter manufacture or expiry dates manually."
             )
+            batchExternalLookup = nil
             return
         }
 
@@ -239,7 +261,8 @@ struct ProductEditorView: View {
             hasManualExpiryDate = true
         }
 
-        batchLookupMessage = result.sourceDescription
+        batchExternalLookup = result.suggestedExternalLookup
+        batchLookupMessage = result.message ?? result.sourceDescription
     }
 }
 

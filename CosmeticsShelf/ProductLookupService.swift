@@ -76,6 +76,14 @@ struct BatchCodeLookupResult {
     let manufactureDate: Date?
     let expiryDate: Date?
     let sourceDescription: String
+    let message: String?
+    let suggestedExternalLookup: SuggestedExternalLookup?
+}
+
+struct SuggestedExternalLookup: Hashable {
+    let name: String
+    let url: URL
+    let note: String
 }
 
 enum LookupError: LocalizedError, Equatable {
@@ -182,12 +190,14 @@ struct ProductLookupService {
             try validate(response: response)
 
             let lookup = try JSONDecoder().decode(APIBatchLookupResponse.self, from: data)
-            guard lookup.result == "found" else { return nil }
+            guard lookup.result == "found" || lookup.suggestedExternalLookup != nil else { return nil }
 
             return BatchCodeLookupResult(
                 manufactureDate: lookup.manufactureDate.flatMap(Self.dateFormatter.date(from:)),
                 expiryDate: lookup.expiryDate.flatMap(Self.dateFormatter.date(from:)),
-                sourceDescription: lookup.sourceDescription
+                sourceDescription: lookup.sourceDescription,
+                message: lookup.message,
+                suggestedExternalLookup: lookup.suggestedExternalLookup.map(SuggestedExternalLookup.init(apiLookup:))
             )
         } catch {
             return nil
@@ -344,6 +354,14 @@ private struct APIBatchLookupResponse: Decodable {
     let manufactureDate: String?
     let expiryDate: String?
     let sourceDescription: String
+    let message: String?
+    let suggestedExternalLookup: APIExternalLookupSuggestion?
+}
+
+private struct APIExternalLookupSuggestion: Decodable {
+    let name: String
+    let url: URL
+    let note: String
 }
 
 private extension ProductSearchCandidate {
@@ -366,6 +384,14 @@ private extension ProductSearchCandidate {
         self.source = apiCandidate.source
         self.confidence = apiCandidate.confidence
         self.matchReasons = apiCandidate.matchReasons
+    }
+}
+
+private extension SuggestedExternalLookup {
+    init(apiLookup: APIExternalLookupSuggestion) {
+        self.name = apiLookup.name
+        self.url = apiLookup.url
+        self.note = apiLookup.note
     }
 }
 
